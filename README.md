@@ -1,18 +1,17 @@
 # Bi-directional Attention Flow for Machine Comprehension
  
 - This the original implementation of [Bi-directional Attention Flow for Machine Comprehension][paper] (Seo et al., 2016).
-- This is tensorflow v1.1.0 comaptible version. This is not compatible with previous trained models, 
-so if you want to use them, go to [v0.2.1][v0.2.1]. 
+- This is tensorflow v1.2.0 comaptible version.
 - The CodaLab worksheet for the [SQuAD Leaderboard][squad] submission is available [here][worksheet].
-- Please contact [Minjoon Seo][minjoon] ([@seominjoon][minjoon-github]) for questions and suggestions.
+- Please contact [Minjoon Seo][minjoon] ([@seominjoon][minjoon-github]) for questions and suggestions. You may contact [iamgroot42](https://github.com/iamgroot42) as well, I'll try and help ^_^.
 
 ## 0. Requirements
 #### General
-- Python (developed on 3.5.2. Issues have been reported with Python 2!)
+- Python 3
 - unzip
 
 #### Python Packages
-- tensorflow (deep learning library, verified on 1.1.0)
+- tensorflow (deep learning library, verified on 1.2.0)
 - nltk (NLP tools, verified on 3.2.1)
 - tqdm (progress bar, verified on 4.7.4)
 - jinja2 (for visaulization; if you only train and test, not needed)
@@ -26,7 +25,7 @@ chmod +x download.sh; ./download.sh
 
 Second, Preprocess Stanford QA dataset (along with GloVe vectors) and save them in `$PWD/data/squad` (~5 minutes):
 ```
-python -m squad.prepro
+python3 -m squad.prepro
 ```
 
 ## 2. Training
@@ -38,17 +37,17 @@ The training converges at ~18k steps, and it took ~4s per step (i.e. ~20 hours).
 
 Before training, it is recommended to first try the following code to verify everything is okay and memory is sufficient:
 ```
-python -m basic.cli --mode train --noload --debug
+python3 -m basic.cli --mode train --noload --debug
 ```
 
 Then to fully train, run:
 ```
-python -m basic.cli --mode train --noload
+python3 -m basic.cli --mode train --noload
 ```
 
 You can speed up the training process with optimization flags:
 ```
-python -m basic.cli --mode train --noload --len_opt --cluster
+python3 -m basic.cli --mode train --noload --len_opt --cluster
 ```
 You can still omit them, but training will be much slower.
 
@@ -56,12 +55,12 @@ You can still omit them, but training will be much slower.
 ## 3. Test
 To test, run:
 ```
-python -m basic.cli
+python3 -m basic.cli
 ```
 
 Similarly to training, you can give the optimization flags to speed up test (5 minutes on dev data):
 ```
-python -m basic.cli --len_opt --cluster
+python3 -m basic.cli --len_opt --cluster
 ```
 
 This command loads the most recently saved model during training and begins testing on the test data.
@@ -71,33 +70,19 @@ Note that the printed scores are not official (our scoring scheme is a bit harsh
 To obtain the official number, use the official evaluator (copied in `squad` folder) and the output json file:
 
 ```
-python squad/evaluate-v1.1.py $HOME/data/squad/dev-v1.1.json out/basic/00/answer/test-####.json
+python3 squad/evaluate-v1.1.py $HOME/data/squad/dev-v1.1.json out/basic/00/answer/test-####.json
 ```
 
-### 3.1 Loading from pre-trained weights
-NOTE: this version is not compatible with the following trained models. 
-For compatibility, use [v0.2.1][v0.2.1]. 
-
-Instead of training the model yourself, you can choose to use pre-trained weights that were used for [SQuAD Leaderboard][squad] submission.
-Refer to [this worksheet][worksheet] in CodaLab to reproduce the results.
-If you are unfamiliar with CodaLab, follow these simple steps (given that you met all prereqs above):
-
-1. Download `save.zip` from the [worksheet][worksheet] and unzip it in the current directory.
-2. Copy `glove.6B.100d.txt` from your glove data folder (`$HOME/data/glove/`) to the current directory.
-3. To reproduce single model:
-  
-  ```
-  basic/run_single.sh $HOME/data/squad/dev-v1.1.json single.json
-  ```
-  
-  This writes the answers to `single.json` in the current directory. You can then use the official evaluator to obtain EM and F1 scores. If you want to run on GPU (~5 mins), change the value of batch_size flag in the shell file to a higher number (60 for 12GB GPU RAM). 
-4. Similarly, to reproduce ensemble method:
-  
-  ```
-  basic/run_ensemble.sh $HOME/data/squad/dev-v1.1.json ensemble.json 
-  ```
-  If you want to run on GPU, you should run the script sequentially by removing '&' in the forloop, or you will need to specify different GPUs for each run of the for loop.
-
+## 4. Demo
+You may try your own paragraph and question by pasting your paragraph in the file `SAMPLE_PARAGRAPH` and then running
+```
+python3 run_prediction.py SAMPLE_PARAGRAPH <question>
+```
+For example, 
+```
+python3 run_prediction.py SAMPLE_PARAGRAPH what is valuable security?
+```
+Have a look at this file's code if you want to use this model as an API for your own product. Note that this can be optimized further according to your use case (as the model is loaded from memory every time you run this file), so try to use the library like in the file.
 ## Results
 
 ### Dev Data
@@ -106,53 +91,23 @@ If you are unfamiliar with CodaLab, follow these simple steps (given that you me
 | -------- |:------:|:------:|
 | single   | 67.8   | 77.4   |
 
-###Dev Data (old)
-NOTE: These numbers are from [v0.2.1][v0.2.1]. 
-
-|          | EM (%) | F1 (%) |
-| -------- |:------:|:------:|
-| single   | 67.7   | 77.3   |
-| ensemble | 72.6   | 80.7   |
-
-
-###Test Data (old)
-NOTE: These numbers are from [v0.2.1][v0.2.1]. 
-
-|          | EM (%) | F1 (%) |
-| -------- |:------:|:------:|
-| single   | 68.0   | 77.3   |
-| ensemble | 73.3   | 81.1   |
 
 Refer to [our paper][paper] for more details.
 See [SQuAD Leaderboard][squad] to compare with other models.
 
 
-<!--
-## Using Pre-trained Model
-
-If you would like to use pre-trained model, it's very easy! 
-You can download the model weights [here][save] (make sure that its commit id matches the source code's).
-Extract them and put them in `$PWD/out/basic/00/save` directory, with names unchanged.
-Then do the testing again, but you need to specify the step # that you are loading from:
-```
-python -m basic.cli --mode test --batch_size 8 --eval_num_batches 0 --load_step ####
-```
--->
-
-
 ## Multi-GPU Training & Testing
-Our model supports multi-GPU training.
-We follow the parallelization paradigm described in [TensorFlow Tutorial][multi-gpu].
-In short, if you want to use batch size of 60 (default) but if you have 3 GPUs with 4GB of RAM,
+This model supports multi-GPU training.
+If you want to use batch size of 60 (default) but if you have 3 GPUs with 4GB of RAM,
 then you initialize each GPU with batch size of 20, and combine the gradients on CPU.
 This can be easily done by running:
 ```
-python -m basic.cli --mode train --noload --num_gpus 3 --batch_size 20
+python3 -m basic.cli --mode train --noload --num_gpus 3 --batch_size 20
 ```
 
 Similarly, you can speed up your testing by:
 ```
-python -m basic.cli --num_gpus 3 --batch_size 20 
+python3 -m basic.cli --num_gpus 3 --batch_size 20 
 ```
  
 
