@@ -112,6 +112,7 @@ flags.DEFINE_bool("late", False, "Late fusion? [False]")
 flags.DEFINE_string("device_type", "cpu", "cpu | gpu [gpu]")
 flags.DEFINE_bool("dynamic_att", False, "Dynamic attention [False]")
 
+
 class Demo(object):
     def __init__(self):
         config = flags.FLAGS
