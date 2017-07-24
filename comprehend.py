@@ -1,6 +1,5 @@
 from squad.demo_prepro import prepro
 from basic.demo_cli import Demo
-import sys
 
 
 class MachineComprehend:
@@ -16,6 +15,7 @@ class MachineComprehend:
 
 
 if __name__ == "__main__":
+	import sys
 	mc = MachineComprehend()
 	p = open(sys.argv[1], 'r')
 	paragraph = []

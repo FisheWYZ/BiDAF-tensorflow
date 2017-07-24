@@ -9,10 +9,11 @@ mkdir $SQUAD_DIR
 wget https://rajpurkar.github.io/SQuAD-explorer/dataset/train-v1.1.json -O $SQUAD_DIR/train-v1.1.json
 wget https://rajpurkar.github.io/SQuAD-explorer/dataset/dev-v1.1.json -O $SQUAD_DIR/dev-v1.1.json
 
-
-# Download CNN and DailyMail
-# Download at: http://cs.nyu.edu/~kcho/DMQA/
-
+#Download Models
+wget https://www.dropbox.com/s/iahghqnhd8ee4rs/data.zip?dl=1 -O data.zip
+unzip data.zip
+wget https://www.dropbox.com/s/kqfipzlhkfxhguv/out.zip?dl=1 -O out.zip
+unzip out.zip
 
 # Download GloVe
 GLOVE_DIR=$DATA_DIR/glove

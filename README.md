@@ -76,11 +76,11 @@ python3 squad/evaluate-v1.1.py $HOME/data/squad/dev-v1.1.json out/basic/00/answe
 ## 4. Demo
 You may try your own paragraph and question by pasting your paragraph in the file `SAMPLE_PARAGRAPH` and then running
 ```
-python3 run_prediction.py SAMPLE_PARAGRAPH <question>
+python3 comprehend.py SAMPLE_PARAGRAPH <question>
 ```
 For example, 
 ```
-python3 run_prediction.py SAMPLE_PARAGRAPH what is valuable security?
+python3 comprehend.py SAMPLE_PARAGRAPH what is valuable security?
 ```
 Have a look at this file's code if you want to use this model as an API for your own product. Note that this can be optimized further according to your use case (as the model is loaded from memory every time you run this file), so try to use the library like in the file.
 ## Results
